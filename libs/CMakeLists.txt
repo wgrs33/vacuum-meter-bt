@@ -1,0 +1,5 @@
+add_subdirectory(common)
+add_subdirectory(lcd_i2c)
+add_subdirectory(Bounce2)
+add_subdirectory(Encoder)
+add_subdirectory(EncoderButton)
