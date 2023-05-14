@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(vacuum-meter VERSION 2.0.0)
-
 set(PICO_BOARD pico_w)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -15,6 +13,8 @@ set(CMAKE_CXX_STANDARD 17)
 if (PICO_SDK_VERSION_STRING VERSION_LESS "1.3.0")
     message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
 endif()
+
+project(vacuum-meter-bt LANGUAGES ASM C CXX VERSION 2.0.0)
 
 # Initialize the SDK
 pico_sdk_init()

@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include <string>
-#include "vacuum-meter.h"
+#include "vacuum-meter-bt.h"
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 #include "hardware/adc.h"
