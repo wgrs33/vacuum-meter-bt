@@ -77,20 +77,15 @@ static void  att_packet_handler (uint8_t packet_type, uint16_t channel, uint8_t 
 static int   att_write_callback(hci_con_handle_t con_handle, uint16_t att_handle, uint16_t transaction_mode, uint16_t offset, uint8_t *buffer, uint16_t buffer_size);
 static void  streamer(void);
 
-// Flags general discoverable, BR/EDR supported (== not supported flag not set) when ENABLE_GATT_OVER_CLASSIC is enabled
-#ifdef ENABLE_GATT_OVER_CLASSIC
-#define APP_AD_FLAGS 0x02
-#else
 #define APP_AD_FLAGS 0x06
-#endif
 
 const uint8_t adv_data[] = {
     // Flags general discoverable
     0x02, BLUETOOTH_DATA_TYPE_FLAGS, APP_AD_FLAGS,
-    // Name
-    0x0c, BLUETOOTH_DATA_TYPE_COMPLETE_LOCAL_NAME, 'L', 'E', ' ', 'S', 't', 'r', 'e', 'a', 'm', 'e', 'r', 
     // Incomplete List of 16-bit Service Class UUIDs -- FF10 - only valid for testing!
     0x03, BLUETOOTH_DATA_TYPE_INCOMPLETE_LIST_OF_16_BIT_SERVICE_CLASS_UUIDS, 0x10, 0xff,
+    // Name
+    0x0d, BLUETOOTH_DATA_TYPE_COMPLETE_LOCAL_NAME, 'V', 'a', 'c', 'u', 'u', 'm', ' ', 'M', 'e', 't', 'e', 'r'
 };
 const uint8_t adv_data_len = sizeof(adv_data);
 
@@ -112,10 +107,6 @@ static le_streamer_connection_t le_streamer_connections[MAX_NR_CONNECTIONS];
 
 // round robin sending
 static int connection_index;
-
-#ifdef ENABLE_GATT_OVER_CLASSIC
-static uint8_t gatt_service_buffer[70];
-#endif
 
 static void init_connections(void){
     // track connections
@@ -157,20 +148,6 @@ static void le_streamer_setup(void){
 
     // setup SM: Display only
     sm_init();
-
-#ifdef ENABLE_GATT_OVER_CLASSIC
-    // init SDP, create record for GATT and register with SDP
-    sdp_init();
-    memset(gatt_service_buffer, 0, sizeof(gatt_service_buffer));
-    gatt_create_sdp_record(gatt_service_buffer, 0x10001, ATT_SERVICE_GATT_SERVICE_START_HANDLE, ATT_SERVICE_GATT_SERVICE_END_HANDLE);
-    sdp_register_service(gatt_service_buffer);
-    printf("SDP service record size: %u\n", de_get_len(gatt_service_buffer));
-
-    // configure Classic GAP
-    gap_set_local_name("GATT Streamer BR/EDR 00:00:00:00:00:00");
-    gap_ssp_set_io_capability(SSP_IO_CAPABILITY_DISPLAY_YES_NO);
-    gap_discoverable_control(1);
-#endif
 
     // setup ATT server
     att_server_init(profile_data, NULL, att_write_callback);    

@@ -1,7 +1,7 @@
 # generate header from GATT file
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/gatt_streamer_server.h
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/gatt_streamer_server.gatt
-  COMMAND ${PICO_SDK_PATH}/lib/btstack/tool/compile_gatt.py 
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/*.gatt
+  COMMAND ${PICO_SDK_PATH}/lib/btstack/tool/compile_gatt.py -I ${CMAKE_CURRENT_SOURCE_DIR}
       ${CMAKE_CURRENT_SOURCE_DIR}/gatt_streamer_server.gatt
       ${CMAKE_CURRENT_BINARY_DIR}/gatt_streamer_server.h
   VERBATIM
