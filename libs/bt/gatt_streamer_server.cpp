@@ -206,19 +206,25 @@ static void test_track_sent(le_streamer_connection_t * context, int bytes_sent){
 }
 /* LISTING_END(tracking): Tracking throughput */
 
-static uint16_t send_pressure_data(uint8_t index, uint16_t offset, uint8_t * buffer, uint16_t buffer_size){
-    switch (index){
-        case 1:
-            return att_read_callback_handle_blob((const uint8_t *)&index, (uint16_t) sizeof(index), offset, buffer, buffer_size);
-        case 2:
-            return att_read_callback_handle_blob((const uint8_t *)&index, (uint16_t) sizeof(index), offset, buffer, buffer_size);
-        case 3:
-            return att_read_callback_handle_blob((const uint8_t *)&index, (uint16_t) sizeof(index), offset, buffer, buffer_size);
-        case 4:
-            return att_read_callback_handle_blob((const uint8_t *)&index, (uint16_t) sizeof(index), offset, buffer, buffer_size);
+static uint16_t send_pressure_data(uint16_t att_handle, uint16_t offset, uint8_t * buffer, uint16_t buffer_size){
+    uint16_t index;
+    switch(att_handle){
+        case ATT_CHARACTERISTIC_0000FF11_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE:
+            index = 1;
+            break;
+        case ATT_CHARACTERISTIC_0000FF12_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE:
+            index = 2;
+            break;
+        case ATT_CHARACTERISTIC_0000FF13_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE:
+            index = 3;
+            break;
+        case ATT_CHARACTERISTIC_0000FF14_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE:
+            index = 4;
+            break;
         default:
             return 0;
     }
+    return att_read_callback_handle_blob((const uint8_t *)&index, (uint16_t) sizeof(index), offset, buffer, buffer_size);
 }
 
 static uint16_t send_manufacturer_data(uint16_t att_handle, uint16_t offset, uint8_t * buffer, uint16_t buffer_size) {
@@ -516,13 +522,10 @@ static uint16_t att_read_callback(hci_con_handle_t con_handle, uint16_t att_hand
     UNUSED(con_handle);
     switch(att_handle){
         case ATT_CHARACTERISTIC_0000FF11_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE:
-            return send_pressure_data(1, offset, buffer, buffer_size);
         case ATT_CHARACTERISTIC_0000FF12_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE:
-            return send_pressure_data(2, offset, buffer, buffer_size);
         case ATT_CHARACTERISTIC_0000FF13_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE:
-            return send_pressure_data(3, offset, buffer, buffer_size);
         case ATT_CHARACTERISTIC_0000FF14_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE:
-            return send_pressure_data(4, offset, buffer, buffer_size);
+            return send_pressure_data(att_handle, offset, buffer, buffer_size);
         case ATT_CHARACTERISTIC_ORG_BLUETOOTH_CHARACTERISTIC_MANUFACTURER_NAME_STRING_01_VALUE_HANDLE:
         case ATT_CHARACTERISTIC_ORG_BLUETOOTH_CHARACTERISTIC_MODEL_NUMBER_STRING_01_VALUE_HANDLE:
         case ATT_CHARACTERISTIC_ORG_BLUETOOTH_CHARACTERISTIC_SERIAL_NUMBER_STRING_01_VALUE_HANDLE:
