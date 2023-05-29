@@ -258,6 +258,11 @@ static uint16_t send_manufacturer_data(uint16_t att_handle, uint16_t offset, uin
     return att_read_callback_handle_blob((const uint8_t *)value.c_str(), (uint16_t) value.size(), offset, buffer, buffer_size);
 }
 
+static uint16_t send_battery_level(uint16_t offset, uint8_t * buffer, uint16_t buffer_size) {
+    uint8_t battery_level = 100;
+    return att_read_callback_handle_blob((const uint8_t *)&battery_level, (uint16_t) sizeof(battery_level), offset, buffer, buffer_size);
+}
+
 /* 
  * @section HCI Packet Handler
  *
@@ -534,8 +539,8 @@ static uint16_t att_read_callback(hci_con_handle_t con_handle, uint16_t att_hand
         case ATT_CHARACTERISTIC_ORG_BLUETOOTH_CHARACTERISTIC_SOFTWARE_REVISION_STRING_01_VALUE_HANDLE:
         case ATT_CHARACTERISTIC_ORG_BLUETOOTH_CHARACTERISTIC_SYSTEM_ID_01_VALUE_HANDLE:
             return send_manufacturer_data(att_handle, offset, buffer, buffer_size);
-        // case ATT_CHARACTERISTIC_ORG_BLUETOOTH_CHARACTERISTIC_BATTERY_LEVEL_01_VALUE_HANDLE:
-        //     return send_battery_level(offset, buffer, buffer_size);
+        case ATT_CHARACTERISTIC_ORG_BLUETOOTH_CHARACTERISTIC_BATTERY_LEVEL_01_VALUE_HANDLE:
+            return send_battery_level(offset, buffer, buffer_size);
         default:
             printf("Unknown read of 0x%04x, len %u\n", att_handle, buffer_size);
             break;
