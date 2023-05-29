@@ -36,6 +36,9 @@ target_compile_definitions(le_streamer PRIVATE
         SOFTWARE_REVISION_STRING="${CMAKE_PROJECT_VERSION}"
         )
 
+pico_enable_stdio_usb(le_streamer 1)
+pico_enable_stdio_uart(le_streamer 0)
+
 suppress_btstack_warnings()
 
 pico_add_extra_outputs(le_streamer)
