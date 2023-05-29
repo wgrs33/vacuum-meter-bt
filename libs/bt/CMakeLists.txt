@@ -10,15 +10,16 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/config/gatt_streamer_serve
 
 #<< Adds common stuff for all the examples
 add_executable(le_streamer
-        ${CMAKE_CURRENT_SOURCE_DIR}/common.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/background.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/gatt_streamer_server.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/common.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/background.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/gatt_streamer_server.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/config/gatt_streamer_server.h
         )
 
 
 target_link_libraries(le_streamer PRIVATE
         pico_stdlib
+        pico_unique_id
         pico_btstack_ble
         pico_btstack_cyw43
         pico_cyw43_arch_threadsafe_background
@@ -32,6 +33,7 @@ target_include_directories(le_streamer PRIVATE
 target_compile_definitions(le_streamer PRIVATE
         PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=3000
         CYW43_LWIP=0
+        SOFTWARE_REVISION_STRING="${CMAKE_PROJECT_VERSION}"
         )
 
 suppress_btstack_warnings()
