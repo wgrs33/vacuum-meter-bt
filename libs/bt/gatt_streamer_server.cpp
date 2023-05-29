@@ -451,52 +451,15 @@ static int att_write_callback(hci_con_handle_t con_handle, uint16_t att_handle, 
     if (transaction_mode != ATT_TRANSACTION_MODE_NONE) return 0;
     le_streamer_connection_t * context = connection_for_conn_handle(con_handle);
     switch(att_handle){
-        case ATT_CHARACTERISTIC_0000FF15_0000_1000_8000_00805F9B34FB_01_CLIENT_CONFIGURATION_HANDLE:
-        case ATT_CHARACTERISTIC_0000FF16_0000_1000_8000_00805F9B34FB_01_CLIENT_CONFIGURATION_HANDLE:
-            context->le_notification_enabled = little_endian_read_16(buffer, 0) == GATT_CLIENT_CHARACTERISTICS_CONFIGURATION_NOTIFICATION;
-            printf("%c: Notifications enabled %u\n", context->name, context->le_notification_enabled); 
-            if (context->le_notification_enabled){
-                switch (att_handle){
-                    case ATT_CHARACTERISTIC_0000FF15_0000_1000_8000_00805F9B34FB_01_CLIENT_CONFIGURATION_HANDLE:
-                        context->value_handle = ATT_CHARACTERISTIC_0000FF15_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE;
-                        break;
-                    case ATT_CHARACTERISTIC_0000FF16_0000_1000_8000_00805F9B34FB_01_CLIENT_CONFIGURATION_HANDLE:
-                        context->value_handle = ATT_CHARACTERISTIC_0000FF16_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE;
-                        break;
-                    default:
-                        break;
-                }
-                att_server_request_can_send_now_event(context->connection_handle);
-            }
-            test_reset(context);
-            break;
-        case ATT_CHARACTERISTIC_0000FF15_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE:
-        case ATT_CHARACTERISTIC_0000FF16_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE:
-            test_track_sent(context, buffer_size);
-            break;
         case ATT_CHARACTERISTIC_0000FF11_0000_1000_8000_00805F9B34FB_01_CLIENT_CONFIGURATION_HANDLE:
         case ATT_CHARACTERISTIC_0000FF12_0000_1000_8000_00805F9B34FB_01_CLIENT_CONFIGURATION_HANDLE:
         case ATT_CHARACTERISTIC_0000FF13_0000_1000_8000_00805F9B34FB_01_CLIENT_CONFIGURATION_HANDLE:
         case ATT_CHARACTERISTIC_0000FF14_0000_1000_8000_00805F9B34FB_01_CLIENT_CONFIGURATION_HANDLE:
+        case ATT_CHARACTERISTIC_ORG_BLUETOOTH_CHARACTERISTIC_BATTERY_LEVEL_01_CLIENT_CONFIGURATION_HANDLE:
             context->le_notification_enabled = little_endian_read_16(buffer, 0) == GATT_CLIENT_CHARACTERISTICS_CONFIGURATION_NOTIFICATION;
             printf("%c: Notifications enabled %u\n", context->name, context->le_notification_enabled); 
             if (context->le_notification_enabled){
-                switch (att_handle){
-                    case ATT_CHARACTERISTIC_0000FF11_0000_1000_8000_00805F9B34FB_01_CLIENT_CONFIGURATION_HANDLE:
-                        context->value_handle = ATT_CHARACTERISTIC_0000FF11_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE;
-                        break;
-                    case ATT_CHARACTERISTIC_0000FF12_0000_1000_8000_00805F9B34FB_01_CLIENT_CONFIGURATION_HANDLE:
-                        context->value_handle = ATT_CHARACTERISTIC_0000FF12_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE;
-                        break;
-                    case ATT_CHARACTERISTIC_0000FF13_0000_1000_8000_00805F9B34FB_01_CLIENT_CONFIGURATION_HANDLE:
-                        context->value_handle = ATT_CHARACTERISTIC_0000FF13_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE;
-                        break;
-                    case ATT_CHARACTERISTIC_0000FF14_0000_1000_8000_00805F9B34FB_01_CLIENT_CONFIGURATION_HANDLE:
-                        context->value_handle = ATT_CHARACTERISTIC_0000FF14_0000_1000_8000_00805F9B34FB_01_VALUE_HANDLE;
-                        break;
-                    default:
-                        break;
-                }
+                context->value_handle = (att_handle - 1);
                 att_server_request_can_send_now_event(context->connection_handle);
             }
             test_reset(context);
